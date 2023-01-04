@@ -6,11 +6,15 @@ using UnityEngine.UIElements;
 
 public class ScreenElement : MonoBehaviour
 {
-    public enum Axis { X, Y, Z }
+    public ScreenElementManager screenEM; // The brains of a set of ScreenElement instances
 
-    public enum Direction { NEGATIVE, POSITIVE }
+    public bool canScroll; // Determines whether the ScreenElementManager instance is allowed to scroll when hovered on ScreenElement instances
 
-    [SerializeField] ScreenElementManager screenEM;
+    public string screenName; // Name of ScreenElement instance, assigned in the inspector for clarity
+
+    public Vector2 offset; // How far from the parent the ScreenElement instance will be
+
+    public Vector4[] collisions; // Each vector is formatted and inserted into the editor as such: top-left into bottom-right coordinates (x, y, x, y) 
 
     [HideInInspector] public float sstsr; // Screen size to texture size ratio, can be at most 1
 
@@ -18,25 +22,19 @@ public class ScreenElement : MonoBehaviour
 
     [HideInInspector] public GameObject screenElement; // Assigned once the scene runs
 
-    [SerializeField] Axis screenAxis;
+    [SerializeField] bool visibleOnStart; // Should this ScreenElement instace be visible on start? SHOULD IDEALLY REPLACE THIS BY A LAYER MECHANIC (OR RATHER JUST COMPLEMENTED BY)
 
-    [SerializeField] bool visibleOnStart;
+    [SerializeField] int screenMaterialTextureHeight, startingHeight; // These values are inputted in pixels (not Unity units); the origin is at the top-left of any ScreenElement.
 
-    [SerializeField] Direction screenDirection;
+    [SerializeField] Material screenMaterial; // Material with the corresponding texture to display
 
-    [SerializeField] int screenMaterialTextureHeight, startingHeight /* From the top, inputted in pixels */;
-
-    [SerializeField] Material screenMaterial;
-
-    [SerializeField] string screenName;
-
-    [SerializeField] Vector2 screenSize;
+    [SerializeField] Vector2 screenSize; // The dimensions of the ScreenElement instance, inputted in Unity units (not pixels)
 
     private Mesh m;
 
     private MeshRenderer mr;
 
-    private readonly int[] trianglesNeg = new int[] { 2, 1, 3, 3, 1, 0 }, trianglesPos = new int[] { 0, 1, 3, 3, 1, 2 };
+    private readonly int[] triangles = new int[] { 0, 1, 3, 3, 1, 2 };
 
     private void Start()
     {
@@ -66,58 +64,21 @@ public class ScreenElement : MonoBehaviour
     {
         screenElement = new GameObject(screenName);
         screenElement.transform.SetParent(screenEM.transform);
-        screenElement.transform.localPosition = Vector3.zero;
+        screenElement.transform.localPosition = offset;
         m = screenElement.AddComponent<MeshFilter>().mesh;
         mr = screenElement.AddComponent<MeshRenderer>();
 
-        switch (screenAxis)
+        m.vertices = new Vector3[] // Vertices are relative to the position of the GameObject in the scene
         {
-            case Axis.X:
-                m.vertices = new Vector3[]
-                {
                     Vector3.zero, // Bottom left
                     new Vector3(0, screenSize.y, 0), // Top left
                     new Vector3(screenSize.x, screenSize.y, 0), // Top right
                     new Vector3(screenSize.x, 0, 0) // Bottom right
-                };
+        };
 
-                break;
-
-            case Axis.Y:
-                m.vertices = new Vector3[]
-                {
-                    Vector3.zero, // Bottom left
-                    new Vector3(0, 0, screenSize.y), // Top left
-                    new Vector3(screenSize.x, 0, screenSize.y), // Top right
-                    new Vector3(screenSize.x, 0, 0) // Bottom right
-                };
-
-                break;
-
-            case Axis.Z:
-                m.vertices = new Vector3[]
-                {
-                    Vector3.zero, // Bottom left
-                    new Vector3(0, screenSize.y, 0), // Top left
-                    new Vector3(0, screenSize.y, screenSize.x), // Top right
-                    new Vector3(0, 0, screenSize.x) // Bottom right
-                };
-
-                break;
-        }
-
-        if (screenDirection == Direction.POSITIVE)
-        {
-            m.triangles = trianglesPos;
-        }
-
-        else
-        {
-            m.triangles = trianglesNeg;
-        }
-
+        m.triangles = triangles;
         mr.material = screenMaterial;
         screenElement.AddComponent<MeshCollider>();
-        screenElement.layer = 8; // Adds the "Screen Element" layer for Raycast conditionals
+        screenElement.layer = 8; // Adds the "Screen Element" layer for raycasting
     }
 }
