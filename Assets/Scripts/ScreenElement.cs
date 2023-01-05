@@ -14,21 +14,23 @@ public class ScreenElement : MonoBehaviour
 
     public Vector2 offset; // How far from the parent the ScreenElement instance will be
 
-    public Vector4[] collisions; // Each vector is formatted and inserted into the editor as such: top-left into bottom-right coordinates (x, y, x, y) 
+    public Vector4[] collisions; // Each vector is formatted and inserted into the editor as such: top-left into bottom-right coordinates (x, y, x+1, y+1) [+1 for last 2 because shenanigans]
+
+    public String[] collisionKeys; // Corresponds to each collision coordinate set, used to program commands within Unity scripts as this is the key that is returned.
 
     [HideInInspector] public float sstsr; // Screen size to texture size ratio, can be at most 1
 
-    [HideInInspector] public float down; // How far down the texture the monitor is displaying, from the top, inputted in pixels
+    /*[HideInInspector]*/ public float down; // How far down the texture the monitor is displaying, from the top, inputted in pixels
 
     [HideInInspector] public GameObject screenElement; // Assigned once the scene runs
 
     [SerializeField] bool visibleOnStart; // Should this ScreenElement instace be visible on start? SHOULD IDEALLY REPLACE THIS BY A LAYER MECHANIC (OR RATHER JUST COMPLEMENTED BY)
 
-    [SerializeField] int screenMaterialTextureHeight, startingHeight; // These values are inputted in pixels (not Unity units); the origin is at the top-left of any ScreenElement.
+    public int screenMaterialTextureHeight, startingHeight; // These values are inputted in pixels (not Unity units); the origin is at the top-left of any ScreenElement.
 
     [SerializeField] Material screenMaterial; // Material with the corresponding texture to display
 
-    [SerializeField] Vector2 screenSize; // The dimensions of the ScreenElement instance, inputted in Unity units (not pixels)
+    public Vector2 screenSize; // The dimensions of the ScreenElement instance, inputted in Unity units (not pixels)
 
     private Mesh m;
 

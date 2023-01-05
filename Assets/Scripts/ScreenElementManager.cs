@@ -10,18 +10,21 @@ public class ScreenElementManager : MonoBehaviour
 
     [SerializeField] Sprite cursorSprite, linkSprite;
 
-    [SerializeField] string currentScreenElement; // The current screen element, used with the inspector for clarity
+    [SerializeField] string screenElementName; // The current screen element, used with the inspector for clarity
 
     [SerializeField] Vector2 startingCursorPos; // Relative to the position of parent GameObject, inputted in Unity units (not pixels)
 
     private GameObject mouse, cursor, link;
 
-    private ScreenElement currentSE;
+    [SerializeField] ScreenElement currentScreenElement;
 
-    private Vector2 cursorPos;
+    private string currentCollisionKey;
 
-    private void Start()
+    public Vector2 cursorPos;
+
+    private void Start() // Assign the currentScreenElement that the mouse is hovered on top of. Could eventually program this to occur by script (Ray from camera to startingCursorPos)
     {
+        //Things may break however since the Update method sets it to null very quickly (currentScreenElement)
         mouse = new GameObject("Mouse");
         mouse.transform.SetParent(transform);
         mouse.transform.localPosition = startingCursorPos;
@@ -33,8 +36,8 @@ public class ScreenElementManager : MonoBehaviour
         link.transform.SetParent(mouse.transform);
         link.transform.localPosition = new Vector3(0.008f, -0.048f, 0); // Tested values
         link.AddComponent<SpriteRenderer>().sprite = linkSprite;
-
-        link.SetActive(false); // change this once collision class is already out and then script knows what to enable/disable based on collision input.
+        cursorPos = getCursorPos(mouse.transform.position); // Instead of using startingCursorPos mousePos is used because startingCursorPos is relatiove to the GameObject, whereas we need global coordinates.
+        CollisionCheck();
     }
 
     private void Update()
@@ -43,22 +46,62 @@ public class ScreenElementManager : MonoBehaviour
 
         if (Physics.Raycast(r, out RaycastHit rh) && rh.transform.gameObject.layer == 8 && rh.transform.parent.GetComponent<ScreenElement>().screenEM == this)
         {
-            currentSE = rh.transform.parent.GetComponent<ScreenElement>();
-            currentScreenElement = currentSE.screenName;
+            Cursor.visible = false;
+            currentScreenElement = rh.transform.parent.GetComponent<ScreenElement>();
+            screenElementName = currentScreenElement.screenName;
             mouse.transform.position = rh.point;
 
-            if (currentSE.canScroll)
+            // Calculates the cursor position LOCAL to the current screen element; used primarily in the detection of UI collisions.
+            cursorPos = getCursorPos(rh.point);
+            CollisionCheck();
+
+            if (currentScreenElement.canScroll)
             {
                 float y = -Input.mouseScrollDelta.y * scrollSpeed * Time.deltaTime;
 
-                currentSE.Scroll(y);
+                currentScreenElement.Scroll(y);
             }
         }
 
         else
         {
+            Cursor.visible = true;
+            screenElementName = null;
             currentScreenElement = null;
-            currentSE = null;
+            cursorPos = new Vector2(-1, -1);
         }
+    }
+
+    private Vector2 getCursorPos(Vector2 cursorPos)
+    {
+        return new Vector2(
+            (cursorPos.x - currentScreenElement.offset.x - transform.position.x) * 1000,
+            currentScreenElement.screenSize.y * 1000 - (cursorPos.y - currentScreenElement.offset.y - transform.position.y) * 1000 + currentScreenElement.down
+            );
+    }
+
+    private void CollisionCheck()
+    {
+        for (int i = 0; i < currentScreenElement.collisions.Length; i++)
+        {
+            Vector4 currentCollision = currentScreenElement.collisions[i];
+
+            if (boundsCheck(currentCollision))
+            {
+                currentCollisionKey = currentScreenElement.collisionKeys[i];
+                cursor.SetActive(false);
+                link.SetActive(true);
+                return;
+            }
+
+            currentCollisionKey = "";
+            cursor.SetActive(true);
+            link.SetActive(false);
+        }
+    }
+
+    private bool boundsCheck(Vector4 currentCollision)
+    {
+        return (cursorPos.x >= currentCollision.x && cursorPos.y >= currentCollision.y && cursorPos.x <= currentCollision.z && cursorPos.y <= currentCollision.w);
     }
 }
