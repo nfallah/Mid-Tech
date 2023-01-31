@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ScreenElementManager : MonoBehaviour
 {
+    [SerializeField] bool active;
+
     [SerializeField] Camera playerCamera;
 
     [SerializeField] float scrollSpeed; // Acounts for the multiplication of Time.deltaTime
@@ -30,14 +32,15 @@ public class ScreenElementManager : MonoBehaviour
         mouse.transform.localPosition = startingCursorPos;
         cursor = new GameObject("Cursor");
         cursor.transform.SetParent(mouse.transform);
-        cursor.transform.localPosition = new Vector3(0.0245f, -0.0375f, 0); // Tested values
+        cursor.transform.localPosition = new Vector3(0.0245f, -0.0375f, -0.001f); // Tested values
         cursor.AddComponent<SpriteRenderer>().sprite = cursorSprite;
         link = new GameObject("Link");
         link.transform.SetParent(mouse.transform);
-        link.transform.localPosition = new Vector3(0.008f, -0.048f, 0); // Tested values
+        link.transform.localPosition = new Vector3(0.008f, -0.048f, -0.001f); // Tested values
         link.AddComponent<SpriteRenderer>().sprite = linkSprite;
         cursorPos = getCursorPos(mouse.transform.position); // Instead of using startingCursorPos mousePos is used because startingCursorPos is relatiove to the GameObject, whereas we need global coordinates.
         CollisionCheck();
+        enabled = active;
     }
 
     private void Update()
