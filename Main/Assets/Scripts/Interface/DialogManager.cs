@@ -10,6 +10,9 @@ public class DialogManager : MonoBehaviour
     private static bool isCreated, // Utilized to establish a singleton state pattern
     isRunning; // Ensures that multiple dialogs cannot be generated at the same time
 
+    // Private constructor; ensures there is no instance creation
+    private DialogManager() {}
+
     private class Status { public bool isComplete = false; } // Utilized to terminate coroutines via reference by address
 
     [SerializeField]
@@ -21,8 +24,6 @@ public class DialogManager : MonoBehaviour
     transitionDelay; // The minimum waiting time before potentially transitioning (transitioning: skipping current dialogue OR moving to next dialogue)
 
     [SerializeField] int borderThickness;
-
-    [SerializeField] KeyCode transitionKey; // The key utilized to transition dialogues
 
     [SerializeField] GameObject root; // The root object that contains the text as well as other UI elements
 
@@ -46,7 +47,7 @@ public class DialogManager : MonoBehaviour
     // Ensures there is only one instance; hides root object
     private void Awake()
     {
-        // Destroys script reference if it has already been established somewhere else
+        // Destroys script reference if it has already been established anywhere else
         if (isCreated)
         {
             Destroy(this);
@@ -92,7 +93,7 @@ public class DialogManager : MonoBehaviour
         else
         {
             // Idles until transition key is pressed (given transitioning is allowed)
-            while (!Input.GetKeyDown(transitionKey) || !shouldTransition)
+            while (!Input.GetKeyDown(Settings.dialogueInteractKey) || !shouldTransition)
             {
                 yield return null;
             }
@@ -127,7 +128,7 @@ public class DialogManager : MonoBehaviour
         StartCoroutine(Display(currentDialog, status));
 
         // Idles until the dialogue is complete OR the transition key is pressed (given transitioning is allowed)
-        while (actualDialog != currentDialog && (!Input.GetKeyDown(transitionKey) || !shouldTransition))
+        while (actualDialog != currentDialog && (!Input.GetKeyDown(Settings.dialogueInteractKey) || !shouldTransition))
         {
             yield return null;
         }
@@ -234,6 +235,6 @@ public class DialogManager : MonoBehaviour
         nameBorderRightTransform.anchoredPosition = nameBorderUpTransform.anchoredPosition = Vector2.zero;
     }
 
-    // Dialog getter method
+    // Instance getter method
     public static DialogManager getDialogManager() { return instance; }
 }
