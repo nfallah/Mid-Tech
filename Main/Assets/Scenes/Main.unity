@@ -132,8 +132,8 @@ GameObject:
   - component: {fileID: 137708988}
   - component: {fileID: 137708989}
   - component: {fileID: 137708992}
-  - component: {fileID: 137708990}
   - component: {fileID: 137708991}
+  - component: {fileID: 137708990}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -149,7 +149,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 137708987}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.08, z: -5}
+  m_LocalPosition: {x: 0, y: 0.0001, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 963194228}
@@ -171,7 +171,7 @@ CharacterController:
   m_Radius: 0.5
   m_SlopeLimit: 0
   m_StepOffset: 0
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &137708990
@@ -187,9 +187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manager: {fileID: 137708992}
-  characterCamera: {fileID: 963194227}
   movementSpeed: 5.25
-  movementSpeedAir: 1.75
 --- !u!114 &137708991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,13 +197,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 137708987}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb1325cb9fce4524a9e2aa6f565d6c7f, type: 3}
+  m_Script: {fileID: 11500000, guid: eaf3985a1ebbe9942b1cf2fec60ff0f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   manager: {fileID: 137708992}
-  gravity: 0.0098
-  jumpVelocity: 0.125
-  terminalVelocity: 1.25
+  interactDistance: 4
+  crosshair: {fileID: 1638655298}
+  selected: {fileID: 21300000, guid: 20992ab6d6d7fb8409972e55158f4f2c, type: 3}
+  unselected: {fileID: 21300000, guid: f3522e24abdf23f4f9d5a7c9bf8f12d2, type: 3}
 --- !u!114 &137708992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,9 +217,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 562ff4b835c84354294526b5ec36462f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerCamera: {fileID: 963194227}
   characterController: {fileID: 137708989}
-  onGround: 0
-  isJumping: 0
 --- !u!1 &205525874
 GameObject:
   m_ObjectHideFlags: 0
@@ -551,7 +549,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh14826
+  m_Name: pb_Mesh14858
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1038,7 +1036,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.42, z: 0}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 137708988}
@@ -1827,7 +1825,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 64, y: 64}
+  m_SizeDelta: {x: 32, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1638655298
 MonoBehaviour:
@@ -1842,13 +1840,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 0, a: 1}
+  m_Color: {r: 1, g: 0, b: 0.030630589, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 37b01e353e4f1b24694a88639500c59b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 20992ab6d6d7fb8409972e55158f4f2c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

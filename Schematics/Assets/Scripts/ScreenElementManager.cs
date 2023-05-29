@@ -26,7 +26,7 @@ public class ScreenElementManager : MonoBehaviour
 
     private void Start() // Assign the currentScreenElement that the mouse is hovered on top of. Could eventually program this to occur by script (Ray from camera to startingCursorPos)
     {
-        //Things may break however since the Update method sets it to null very quickly (currentScreenElement)
+        // Things may break however since the Update method sets it to null very quickly (currentScreenElement)
         mouse = new GameObject("Mouse");
         mouse.transform.SetParent(transform);
         mouse.transform.localPosition = startingCursorPos;
@@ -38,7 +38,7 @@ public class ScreenElementManager : MonoBehaviour
         link.transform.SetParent(mouse.transform);
         link.transform.localPosition = new Vector3(0.008f, -0.048f, -0.001f); // Tested values
         link.AddComponent<SpriteRenderer>().sprite = linkSprite;
-        cursorPos = getCursorPos(mouse.transform.position); // Instead of using startingCursorPos mousePos is used because startingCursorPos is relatiove to the GameObject, whereas we need global coordinates.
+        cursorPos = GetCursorPos(mouse.transform.position); // Instead of using startingCursorPos mousePos is used because startingCursorPos is relatiove to the GameObject, whereas we need global coordinates.
         CollisionCheck();
         enabled = active;
     }
@@ -54,8 +54,8 @@ public class ScreenElementManager : MonoBehaviour
             screenElementName = currentScreenElement.screenName;
             mouse.transform.position = rh.point;
 
-            // Calculates the cursor position LOCAL to the current screen element; used primarily in the detection of UI collisions.
-            cursorPos = getCursorPos(rh.point);
+            // Calculates the cursor position relative to the current screen element; used primarily in the detection of UI collisions.
+            cursorPos = GetCursorPos(rh.point);
             CollisionCheck();
 
             if (currentScreenElement.canScroll)
@@ -75,7 +75,7 @@ public class ScreenElementManager : MonoBehaviour
         }
     }
 
-    private Vector2 getCursorPos(Vector2 cursorPos)
+    private Vector2 GetCursorPos(Vector2 cursorPos)
     {
         return new Vector2(
             (cursorPos.x - currentScreenElement.offset.x - transform.position.x) * 1000,
@@ -89,7 +89,7 @@ public class ScreenElementManager : MonoBehaviour
         {
             Vector4 currentCollision = currentScreenElement.collisions[i];
 
-            if (boundsCheck(currentCollision))
+            if (BoundsCheck(currentCollision))
             {
                 currentCollisionKey = currentScreenElement.collisionKeys[i];
                 cursor.SetActive(false);
@@ -103,7 +103,7 @@ public class ScreenElementManager : MonoBehaviour
         }
     }
 
-    private bool boundsCheck(Vector4 currentCollision)
+    private bool BoundsCheck(Vector4 currentCollision)
     {
         return (cursorPos.x >= currentCollision.x && cursorPos.y >= currentCollision.y && cursorPos.x <= currentCollision.z && cursorPos.y <= currentCollision.w);
     }

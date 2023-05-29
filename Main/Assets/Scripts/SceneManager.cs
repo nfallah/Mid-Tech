@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ public class SceneManager : MonoBehaviour
             "Your IP address is: 192.162.1.2. Don't turn around. Keep reading, because *they* know. If you start looking around now you'll arouse their suspicions. Don't turn around."
         };
 
-        //DialogManager.getDialogManager().GenerateDialog(dialogs, "I am a human being", Color.yellow);
+        //DialogManager.Instance.GenerateDialog(dialogs, "I am a human being", Color.yellow);
         //KillYourself();
         //Invoke("Testing", 10);
     }
@@ -31,11 +32,11 @@ public class SceneManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void Testing()
     {
-        DialogManager.getDialogManager().GenerateDialog(dialogs, "AGABABABAGAGAGAGA :)");
+        DialogManager.Instance.GenerateDialog(dialogs, "AGABABABAGAGAGAGA :)");
     }
 }

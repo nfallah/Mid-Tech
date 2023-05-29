@@ -7,7 +7,7 @@ public class DialogManager : MonoBehaviour
 {
     private static DialogManager instance; // Singleton state reference
 
-    private static bool isCreated, // Utilized to establish a singleton state pattern
+    private static bool isCreated, // Utilized to enforce a singleton state pattern
     isRunning; // Ensures that multiple dialogs cannot be generated at the same time
 
     // Private constructor; ensures there is no instance creation
@@ -51,7 +51,7 @@ public class DialogManager : MonoBehaviour
         if (isCreated)
         {
             Destroy(this);
-            throw new Exception("DialogManager instance already established; terminating.");
+            throw new Exception("DialogManager instance already established; terminating current reference.");
         }
 
         instance = this;
@@ -70,8 +70,8 @@ public class DialogManager : MonoBehaviour
     // The main method that initiates the dialog process with a color-specific parameter
     public void GenerateDialog(string[] dialogs, string name, Color color)
     {
-        if (isRunning) throw new System.Exception("GenerateDialog instance already called from another source; terminating.");
-        if (dialogs.Length == 0) throw new System.Exception("Dialog list of length 0 is invalid; terminating.");
+        if (isRunning) throw new System.Exception("GenerateDialog instance already called from another source; terminating process.");
+        if (dialogs.Length == 0) throw new System.Exception("Dialog list of length 0 is invalid.");
         isRunning = true;
         this.dialogs = dialogs;
         color.a = defaultAlpha;
@@ -236,5 +236,16 @@ public class DialogManager : MonoBehaviour
     }
 
     // Instance getter method
-    public static DialogManager getDialogManager() { return instance; }
+    public static DialogManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                throw new Exception("DialogManager instance not yet established.");
+            }
+
+            return instance;
+        }
+    }
 }

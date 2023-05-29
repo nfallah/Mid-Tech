@@ -16,7 +16,7 @@ public class ScreenElement : MonoBehaviour
 
     public Vector4[] collisions; // Each vector is formatted and inserted into the editor as such: top-left into bottom-right coordinates (x, y, x+1, y+1) [+1 for last 2 because shenanigans]
 
-    public String[] collisionKeys; // Corresponds to each collision coordinate set, used to program commands within Unity scripts as this is the key that is returned.
+    public String[] collisionKeys; // Corresponds to each collision coordinate set, used for organizational purposes
 
     [HideInInspector] public float sstsr; // Screen size to texture size ratio, can be at most 1
 
@@ -36,14 +36,14 @@ public class ScreenElement : MonoBehaviour
 
     private MeshRenderer mr;
 
-    private readonly int[] triangles = new int[] { 0, 1, 3, 3, 1, 2 };
+    private readonly int[] triangles = new int[] { 0, 1, 3, 3, 1, 2 }; // Relative order in which the 2 triangles of the quad are read
 
     private void Start()
     {
         CreateScreen(); // Instantiates the physical GameObject
         sstsr = screenSize.y * 1000 / screenMaterialTextureHeight;
         down = startingHeight;
-        Scroll(0);
+        Scroll(0); // For initialization
         screenElement.SetActive(visibleOnStart);
     }
 
@@ -81,6 +81,6 @@ public class ScreenElement : MonoBehaviour
         m.triangles = triangles;
         mr.material = screenMaterial;
         screenElement.AddComponent<MeshCollider>();
-        screenElement.layer = 8; // Adds the "Screen Element" layer for raycasting
+        screenElement.layer = 8; // Adds the "Screen Element" layer for future raycasting
     }
 }
