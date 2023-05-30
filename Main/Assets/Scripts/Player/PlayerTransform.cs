@@ -24,7 +24,7 @@ public class PlayerTransform : MonoBehaviour
         float yLook = Input.GetAxis("Mouse X") * Settings.lookSensitivity * Time.deltaTime;
 
         cameraLook.x = Mathf.Clamp(cameraLook.x + xLook, -89.99f, 89.99f);
-        characterLook.y += yLook % 360;
+        characterLook.y = (characterLook.y + yLook) % 360;
         manager.playerCamera.transform.localEulerAngles = cameraLook;
         transform.eulerAngles = characterLook;
 

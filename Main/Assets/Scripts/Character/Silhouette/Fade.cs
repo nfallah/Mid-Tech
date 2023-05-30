@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class SilhouetteManager : MonoBehaviour
+public class Fade : MonoBehaviour
 {
     [SerializeField] GameObject back, // Back GameObject of the silhouette
     front; // Front GameObject of the silhouette
@@ -20,11 +20,11 @@ public class SilhouetteManager : MonoBehaviour
 
     void Update()
     {
-        Fade();
+        UpdateFade();
     }
 
     // Controls the silhouette fading based on fadeStart and fadeEnd based on distance from the player
-    private void Fade()
+    private void UpdateFade()
     {
         float distance = (PlayerManager.Instance.transform.position - transform.position).magnitude; // Distance between silhouette and player
 
