@@ -11,16 +11,14 @@ public class SceneManager : MonoBehaviour
     void Start()
     {
         dialogs = new string[] {
-            "Hey!",
-            "How's it going?",
-            "Just wanted to let you know that I'm a human being!",
-            "To clarify in case you forgot, I am 100% a human being and NOT a skinwalker in an ethically obtained human body.",
-            "Also me when I purposefully spread misinformation on the interwebs -- we do a slight bit of trolling.",
-            "Your IP address is: 192.162.1.2. Don't turn around. Keep reading, because *they* know. If you start looking around now you'll arouse their suspicions. Don't turn around."
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+            "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         };
 
-        //DialogManager.Instance.GenerateDialog(dialogs, "A human being", Color.yellow);
-        //Invoke("Testing", 10);
+        DialogManager.Instance.GenerateDialog(dialogs, "Lorem Impsum", Color.red);
+        Invoke("Testing", 10);
     }
 
     // Update is called once per frame
@@ -31,6 +29,6 @@ public class SceneManager : MonoBehaviour
 
     private void Testing()
     {
-        DialogManager.Instance.GenerateDialog(dialogs, "AGABABABAGAGAGAGA :)");
+        DialogManager.Instance.GenerateDialog(dialogs, "Latthew Moaces");
     }
 }
