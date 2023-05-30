@@ -15,15 +15,11 @@ public class DialogManager : MonoBehaviour
 
     private class Status { public bool isComplete = false; } // Utilized to terminate coroutines via reference by address
 
-    [SerializeField]
-    Color borderColor,
-    defaultColor; // Default value utilized if a dialog is generated without a color parameter, also determines the alpha value for all dialogues
+    [SerializeField] Color defaultColor; // Default value utilized if a dialog is generated without a color parameter, also determines the alpha value for all dialogues
 
     [SerializeField]
     float dialogSpeed, // Time between each character appearing
     transitionDelay; // The minimum waiting time before potentially transitioning (transitioning: skipping current dialogue OR moving to next dialogue)
-
-    [SerializeField] int borderThickness;
 
     [SerializeField] GameObject root; // The root object that contains the text as well as other UI elements
 
@@ -58,7 +54,6 @@ public class DialogManager : MonoBehaviour
         isCreated = true;
         root.SetActive(false); // Once initiation is complete, make dialog interface not visible until it is called
         defaultAlpha = defaultColor.a;
-        GenerateBorders();
     }
 
     // The main method that initiates the dialog process
@@ -162,77 +157,6 @@ public class DialogManager : MonoBehaviour
     private void EnableTransition()
     {
         shouldTransition = true;
-    }
-
-    // Creates the dialog outline based on input border thickness
-    private void GenerateBorders()
-    {
-        GameObject dialogBorder = new GameObject("Dialog Border"); // The root object
-        RectTransform dialogBorderTransform = dialogBorder.AddComponent<RectTransform>();
-        Vector2 dialogSize = dialogBackground.GetComponent<RectTransform>().sizeDelta;
-
-        dialogBorder.transform.SetParent(root.transform);
-        dialogBorderTransform.anchoredPosition = Vector2.zero;
-
-        // Collects all required variables
-        GameObject dialogBorderLeft = new GameObject("Left", typeof(CanvasRenderer));
-        GameObject dialogBorderRight = new GameObject("Right", typeof(CanvasRenderer));
-        GameObject dialogBorderDown = new GameObject("Down", typeof(CanvasRenderer));
-        GameObject dialogBorderUp = new GameObject("Up", typeof(CanvasRenderer));
-        RectTransform dialogBorderLeftTransform = dialogBorderLeft.AddComponent<RectTransform>();
-        RectTransform dialogBorderRightTransform = dialogBorderRight.AddComponent<RectTransform>();
-        RectTransform dialogBorderDownTransform = dialogBorderDown.AddComponent<RectTransform>();
-        RectTransform dialogBorderUpTransform = dialogBorderUp.AddComponent<RectTransform>();
-        RectTransform nameBackgroundTransform = nameBackground.GetComponent<RectTransform>();
-        RectTransform nameBoxTransform = nameText.transform.parent.GetComponent<RectTransform>();
-        RectTransform nameTextTransform = nameText.GetComponent<RectTransform>();
-        Image dialogBorderLeftImage = dialogBorderLeft.AddComponent<Image>();
-        Image dialogBorderRightImage = dialogBorderRight.AddComponent<Image>();
-        Image dialogBorderDownImage = dialogBorderDown.AddComponent<Image>();
-        Image dialogBorderUpImage = dialogBorderUp.AddComponent<Image>();
-
-        // Dialog border establishment
-        dialogBorderLeft.transform.SetParent(dialogBorder.transform);
-        dialogBorderRight.transform.SetParent(dialogBorder.transform);
-        dialogBorderDown.transform.SetParent(dialogBorder.transform);
-        dialogBorderUp.transform.SetParent(dialogBorder.transform);
-        dialogBorderLeftImage.color = dialogBorderRightImage.color = dialogBorderDownImage.color = dialogBorderUpImage.color = borderColor;
-
-        Vector2 horizontalSize = new Vector2(dialogSize.x, borderThickness);
-        Vector2 verticalSize = new Vector2(borderThickness, dialogSize.y + 2 * borderThickness);
-
-        dialogBorderLeftTransform.sizeDelta = verticalSize + new Vector2(0, borderThickness /*+ nameTextTransform.sizeDelta.y*/ + nameBackgroundTransform.rect.size.y);
-        dialogBorderRightTransform.sizeDelta = verticalSize;
-        dialogBorderDownTransform.sizeDelta = dialogBorderUpTransform.sizeDelta = horizontalSize;
-        dialogBorderLeftTransform.anchoredPosition = new Vector2((-borderThickness - dialogSize.x) / 2f, (borderThickness /*+ nameTextTransform.sizeDelta.y*/ + nameBackgroundTransform.rect.size.y) / 2f);
-        dialogBorderRightTransform.anchoredPosition = new Vector2((borderThickness + dialogSize.x) / 2f, 0);
-        dialogBorderDownTransform.anchoredPosition = new Vector2(0, (-borderThickness - dialogSize.y) / 2f);
-        dialogBorderUpTransform.anchoredPosition = new Vector2(0, (borderThickness + dialogSize.y) / 2f);
-
-        // Name border establishment
-        nameBoxTransform.anchoredPosition = new Vector2(-nameBackgroundTransform.offsetMin.x, borderThickness + nameTextTransform.sizeDelta.y - nameBackgroundTransform.offsetMin.y);
-
-        Vector2 nameBorderRightSize = new Vector2(borderThickness, borderThickness /*+ nameTextTransform.sizeDelta.y*/ + nameBackgroundTransform.rect.size.y);
-        Vector2 nameBorderUpSize = new Vector2(0, borderThickness);
-
-        GameObject nameBorderRight = new GameObject("Right", typeof(CanvasRenderer));
-        GameObject nameBorderUp = new GameObject("Up", typeof(CanvasRenderer));
-        RectTransform nameBorderRightTransform = nameBorderRight.AddComponent<RectTransform>();
-        RectTransform nameBorderUpTransform = nameBorderUp.AddComponent<RectTransform>();
-        Image nameBorderRightImage = nameBorderRight.AddComponent<Image>();
-        Image nameBorderUpImage = nameBorderUp.AddComponent<Image>();
-
-        nameBorderRight.transform.SetParent(nameBackground.transform);
-        nameBorderUp.transform.SetParent(nameBackground.transform);
-        nameBorderRightImage.color = nameBorderUpImage.color = borderColor;
-        nameBorderRightTransform.pivot = new Vector2(0, 0);
-        nameBorderUpTransform.pivot = new Vector2(0.5f, 0);
-        nameBorderRightTransform.anchorMin = nameBorderRightTransform.anchorMax = new Vector2(1, 0);
-        nameBorderUpTransform.anchorMin = new Vector2(0, 1);
-        nameBorderUpTransform.anchorMax = new Vector2(1, 1);
-        nameBorderRightTransform.sizeDelta = nameBorderRightSize;
-        nameBorderUpTransform.sizeDelta = nameBorderUpSize;
-        nameBorderRightTransform.anchoredPosition = nameBorderUpTransform.anchoredPosition = Vector2.zero;
     }
 
     // Instance getter method

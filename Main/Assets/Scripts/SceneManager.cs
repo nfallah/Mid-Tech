@@ -8,11 +8,6 @@ public class SceneManager : MonoBehaviour
     // Start is called before the first frame update
     private string[] dialogs;
 
-    private void Awake()
-    {
-        Canvas.ForceUpdateCanvases(); // Due to Unity's scriptloading, dialog border generation messes up without this call
-    }
-
     void Start()
     {
         dialogs = new string[] {
@@ -24,8 +19,7 @@ public class SceneManager : MonoBehaviour
             "Your IP address is: 192.162.1.2. Don't turn around. Keep reading, because *they* know. If you start looking around now you'll arouse their suspicions. Don't turn around."
         };
 
-        //DialogManager.Instance.GenerateDialog(dialogs, "I am a human being", Color.yellow);
-        //KillYourself();
+        //DialogManager.Instance.GenerateDialog(dialogs, "A human being", Color.yellow);
         //Invoke("Testing", 10);
     }
 
