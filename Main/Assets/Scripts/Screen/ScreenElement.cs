@@ -5,13 +5,15 @@ using UnityEngine;
 
 public class ScreenElement : MonoBehaviour
 {
-    private enum Side { LEFT, RIGHT, DOWN, UP, BACK, FORWARD }
+    [SerializeField] Screen screen;
+
+    [SerializeField] bool locked;
 
     [SerializeField] float physicalHeight;
 
     [SerializeField] int startingHeight; // Calculated from the top of the texture, also measured natively (e.g. pixels over Unity units)
 
-    [SerializeField] Side side;
+    [SerializeField] ScreenButton[] screenButtons;
 
     [SerializeField] string screenName;
 
@@ -19,9 +21,9 @@ public class ScreenElement : MonoBehaviour
 
     [SerializeField] Vector3 offset;
 
-    private float currentHeightRatio, heightRatio;
+    private float currentHeight, currentHeightRatio, heightRatio;
 
-    private int currentHeight, maxClampHeight, maxHeight;
+    private int maxClampHeight, maxHeight;
 
     private Mesh mesh;
 
@@ -84,17 +86,20 @@ public class ScreenElement : MonoBehaviour
         mesh.uv = GetUV();
         mesh.RecalculateBounds();
         meshFilter.mesh = mesh;
+        screen.AddComponent<MeshCollider>();
+        screen.layer = 9;
     }
 
-    public void Scroll(int amount)
+    public void Scroll(float amount)
     {
+        if (locked) return;
         currentHeight = Mathf.Clamp(currentHeight + amount, 0, maxClampHeight);
         mesh.uv = GetUV();
     }
 
     private Vector2[] GetUV()
     {
-        currentHeightRatio = (float)currentHeight / maxHeight;
+        currentHeightRatio = currentHeight / maxHeight;
 
         return new Vector2[]
         {
@@ -109,28 +114,28 @@ public class ScreenElement : MonoBehaviour
     {
         Vector3 direction;
 
-        switch (side)
+        switch (screen.ScreenSide)
         {
-            case Side.LEFT:
+            case Screen.Side.LEFT:
                 direction = Vector3.left;
                 break;
-            case Side.RIGHT:
+            case Screen.Side.RIGHT:
                 direction = Vector3.right;
                 break;
-            case Side.DOWN:
+            case Screen.Side.DOWN:
                 direction = Vector3.down;
                 break;
-            case Side.UP:
+            case Screen.Side.UP:
                 direction = Vector3.up;
                 break;
-            case Side.BACK:
+            case Screen.Side.BACK:
                 direction = Vector3.back;
                 break;
-            case Side.FORWARD:
+            case Screen.Side.FORWARD:
                 direction = Vector3.forward;
                 break;
             default:
-                throw new Exception("GetNormals() call failed -- invalid side specified.");
+                throw new Exception("GetNormals call failed -- invalid side specified.");
         }
 
         return new Vector3[] { direction, direction, direction, direction };
@@ -138,9 +143,9 @@ public class ScreenElement : MonoBehaviour
 
     private Vector3[] GetVertices()
     {
-        switch (side)
+        switch (screen.ScreenSide)
         {
-            case Side.LEFT:
+            case Screen.Side.LEFT:
                 return new Vector3[]
                 {
                     new Vector3(0, 0, 0),
@@ -148,7 +153,7 @@ public class ScreenElement : MonoBehaviour
                     new Vector3(0, dimensions.y, -dimensions.x),
                     new Vector3(0, 0, -dimensions.x)
                 };
-            case Side.RIGHT:
+            case Screen.Side.RIGHT:
                 return new Vector3[]
                 {
                     new Vector3(0, 0, 0),
@@ -156,7 +161,7 @@ public class ScreenElement : MonoBehaviour
                     new Vector3(0, dimensions.y, dimensions.x),
                     new Vector3(0, 0, dimensions.x)
                 };
-            case Side.DOWN:
+            case Screen.Side.DOWN:
                 return new Vector3[]
                 {
                     new Vector3(0, 0, 0),
@@ -164,7 +169,7 @@ public class ScreenElement : MonoBehaviour
                     new Vector3(-dimensions.x, 0, dimensions.y),
                     new Vector3(-dimensions.x, 0, 0)
                 };
-            case Side.UP:
+            case Screen.Side.UP:
                 return new Vector3[]
                 {
                     new Vector3(0, 0, 0),
@@ -172,7 +177,7 @@ public class ScreenElement : MonoBehaviour
                     new Vector3(dimensions.x, 0, dimensions.y),
                     new Vector3(dimensions.x, 0, 0)
                 };
-            case Side.BACK:
+            case Screen.Side.BACK:
                 return new Vector3[]
                 {
                     new Vector3(0, 0, 0),
@@ -180,7 +185,7 @@ public class ScreenElement : MonoBehaviour
                     new Vector3(-dimensions.x, dimensions.y, 0),
                     new Vector3(-dimensions.x, 0, 0)
                 };
-            case Side.FORWARD:
+            case Screen.Side.FORWARD:
                 return new Vector3[]
                 {
                     new Vector3(0, 0, 0),
@@ -189,7 +194,11 @@ public class ScreenElement : MonoBehaviour
                     new Vector3(dimensions.x, 0, 0)
                 };
             default:
-                throw new Exception("GetVertices() call failed -- invalid side specified.");
+                throw new Exception("GetVertices call failed -- invalid side specified.");
         }
     }
+
+    public bool Locked { get { return locked; } set { locked = value; } }
+
+    public ScreenButton[] ScreenButtons { get { return screenButtons; } }
 }
