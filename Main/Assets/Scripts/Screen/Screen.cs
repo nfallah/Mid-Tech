@@ -9,11 +9,15 @@ public class Screen : MonoBehaviour
 {
     public enum Side { LEFT, RIGHT, DOWN, UP, BACK, FORWARD }
 
+    [SerializeField] float raycastDistance, scrollSpeed;
+
     [SerializeField] Side screenSide;
 
     [SerializeField] Sprite cursorSprite, linkSprite;
 
     [SerializeField] Vector2 startingMousePosition;
+
+    [SerializeField] Vector3 cameraPosition;
 
     private readonly float mouseRaycastDistance = 0.0011f, mouseRaycastOffset = 0.001f;
 
@@ -31,6 +35,43 @@ public class Screen : MonoBehaviour
     private void Start()
     {
         CreateCursor();
+        enabled = false;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(Settings.playerInteractKey))
+        {
+            PlayerManager.Instance.SwitchState(PlayerManager.State.SCREEN);
+            return;
+        }
+
+        Ray ray = PlayerManager.Instance.playerCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, raycastDistance) && ScreenElementCheck(hit))
+        {
+            Cursor.visible = false;
+            mouse.transform.position = hit.point;
+            currentScreenElement = hit.transform.GetComponent<ScreenElementReference>().ScreenElement;
+            UpdateMousePosition();
+
+            bool shouldDisplayLink = ScreenButtonCheck();
+
+            cursor.SetActive(!shouldDisplayLink);
+            link.SetActive(shouldDisplayLink);
+
+            float scrollDistance = -Input.mouseScrollDelta.y * scrollSpeed * Time.deltaTime;
+
+            currentScreenElement.Scroll(scrollDistance);
+
+            // To-do: add UIEvent execution if shouldDisplayLink is enabled.
+        }
+
+        else
+        {
+            Cursor.visible = true;
+            currentScreenElement = null;
+        }
     }
 
     private void CreateCursor()
@@ -133,6 +174,34 @@ public class Screen : MonoBehaviour
                 return new Vector3(screenPosition.x, screenPosition.y, 0);
             default:
                 throw new Exception("LocalToGlobalPosition call failed -- invalid side specified.");
+        }
+    }
+
+    public Vector3 CameraPosition
+    {
+        get
+        {
+            return transform.position + LocalToGlobalPosition(cameraPosition) - Direction * cameraPosition.z;
+        }
+    }
+
+    public Vector3 CameraRotation
+    {
+        get
+        {
+            switch (screenSide)
+            {
+                case Side.LEFT:
+                case Side.RIGHT:
+                case Side.DOWN:
+                case Side.UP:
+                    return MouseSideRotation;
+                case Side.BACK:
+                case Side.FORWARD:
+                    return -MouseSideRotation;
+                default:
+                    throw new Exception("CameraRotation call failed -- invalid side specified.");
+            }
         }
     }
 

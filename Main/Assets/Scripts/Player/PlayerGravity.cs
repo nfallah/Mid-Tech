@@ -9,7 +9,7 @@ public class PlayerGravity : MonoBehaviour
 
     [SerializeField] float gravityConstant, jumpVelocity, terminalVelocity;
 
-    private bool isJumping;
+    private bool canJump, isJumping;
 
     private const float epsilon = 0.8f;
 
@@ -35,7 +35,7 @@ public class PlayerGravity : MonoBehaviour
             yVelocity = 0;
         }
 
-        if (Input.GetKey(Settings.playerJumpKey) && !isJumping)
+        if (Input.GetKey(Settings.playerJumpKey) && !isJumping && canJump)
         {
             yVelocity += jumpVelocity;
             isJumping = true;
@@ -50,4 +50,6 @@ public class PlayerGravity : MonoBehaviour
             yVelocity = 0;
         }
     }
+
+    public bool CanJump { set { canJump = value; } }
 }

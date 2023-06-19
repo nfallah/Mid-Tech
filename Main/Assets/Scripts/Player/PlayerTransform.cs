@@ -12,7 +12,6 @@ public class PlayerTransform : MonoBehaviour
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked; //HUEHUE: move later to PlayerManager class, as well as common values like playerlook, etc
         cameraLook = manager.playerCamera.transform.localEulerAngles;
         characterLook = transform.eulerAngles;
     }
@@ -33,4 +32,6 @@ public class PlayerTransform : MonoBehaviour
         float zMove = Input.GetAxisRaw("Vertical") * movementSpeed * Time.deltaTime;
         manager.characterController.Move(xMove * transform.right + zMove * transform.forward);
     }
+
+    public Vector3 CameraLook { get { return cameraLook; } }
 }

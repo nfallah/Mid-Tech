@@ -43,4 +43,6 @@ public class PlayerCrosshair : MonoBehaviour
             crosshair.sprite = unselected;
         }
     }
+
+    public bool CrosshairVisibility { set { crosshair.transform.gameObject.SetActive(value); } }
 }

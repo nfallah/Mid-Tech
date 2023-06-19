@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScreenElement : MonoBehaviour, Interactable
+public class ScreenElement : MonoBehaviour
 {
     [SerializeField] Screen screen;
 
@@ -70,11 +70,6 @@ public class ScreenElement : MonoBehaviour, Interactable
         maxHeight = texture.height;
         dimensions = new Vector2(texture.width / 1000f, physicalHeight);
         CreateScreen();
-    }
-
-    public void Execute()
-    {
-        
     }
 
     private void CreateScreen()
