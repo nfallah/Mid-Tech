@@ -18,7 +18,7 @@ public class PlayerCrosshair : MonoBehaviour
     {
         Ray r = new Ray(manager.playerCamera.transform.position, manager.playerCamera.transform.forward);
 
-        if (Physics.Raycast(r, out RaycastHit obj, interactDistance) && obj.transform.gameObject.layer == 8)
+        if (Physics.Raycast(r, out RaycastHit obj, interactDistance) && (obj.transform.gameObject.layer == 8 || obj.transform.gameObject.layer == 9))
         {
             crosshair.sprite = selected;
 
