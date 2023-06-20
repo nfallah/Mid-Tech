@@ -15,6 +15,8 @@ public class DialogManager : MonoBehaviour
 
     private class Status { public bool isComplete = false; } // Utilized to terminate coroutines via reference by address
 
+    public static bool jumpDelay = false;
+
     [SerializeField] Color defaultColor; // Default value utilized if a dialog is generated without a color parameter, also determines the alpha value for all dialogues
 
     [SerializeField]
@@ -31,6 +33,8 @@ public class DialogManager : MonoBehaviour
     Text dialogText, // Where the dialogue is displayed
     formatNameText, // Original, invisible copy of the name text used to format its background
     nameText; // Reference, visible copy of the name text identical to the original
+
+    private static float jumpDelayTimer = 0.25f;
 
     private bool shouldTransition; // Determines whether a transition can occur
 
@@ -72,6 +76,7 @@ public class DialogManager : MonoBehaviour
         color.a = defaultAlpha;
         dialogBackground.color = nameBackground.color = color;
         formatNameText.text = nameText.text = name;
+        PlayerManager.Instance.SwitchState(PlayerManager.State.DIALOGUE);
         StartCoroutine(Enter(0));
     }
 
@@ -103,6 +108,9 @@ public class DialogManager : MonoBehaviour
                 formatNameText.text = nameText.text = name;
                 dialogs = null;
                 isRunning = false;
+                jumpDelay = true;
+                Invoke("DisableJumpDelay", jumpDelayTimer);
+                PlayerManager.Instance.SwitchState(PlayerManager.State.UNLOCKED);
                 yield break;
             }
         }
@@ -157,6 +165,11 @@ public class DialogManager : MonoBehaviour
     private void EnableTransition()
     {
         shouldTransition = true;
+    }
+
+    private void DisableJumpDelay()
+    {
+        jumpDelay = false;
     }
 
     // Instance getter method

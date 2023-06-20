@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ScreenElement : MonoBehaviour
@@ -8,6 +6,8 @@ public class ScreenElement : MonoBehaviour
     [SerializeField] Screen screen;
 
     [SerializeField] bool locked;
+
+    [SerializeField] Color emissionColor;
 
     [SerializeField] float physicalHeight;
 
@@ -18,6 +18,8 @@ public class ScreenElement : MonoBehaviour
     [SerializeField] string screenName;
 
     [SerializeField] Texture2D texture;
+
+    [SerializeField] ScreenEvent screenEvent; 
 
     [SerializeField] Vector2 offset;
 
@@ -86,6 +88,8 @@ public class ScreenElement : MonoBehaviour
 
         material.SetFloat("_Glossiness", 0);
         material.SetTexture("_MainTex", texture);
+        material.EnableKeyword("_EMISSION");
+        material.SetColor("_EmissionColor", emissionColor);
         meshRenderer.material = material;
         mesh.vertices = Vertices;
         mesh.normals = Normals;
@@ -230,4 +234,6 @@ public class ScreenElement : MonoBehaviour
     public bool Locked { get { return locked; } set { locked = value; } }
 
     public ScreenButton[] ScreenButtons { get { return screenButtons; } }
+
+    public ScreenEvent ScreenEvent { get { return screenEvent; } }
 }

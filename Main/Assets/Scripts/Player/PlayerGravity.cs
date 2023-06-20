@@ -35,7 +35,7 @@ public class PlayerGravity : MonoBehaviour
             yVelocity = 0;
         }
 
-        if (Input.GetKey(Settings.playerJumpKey) && !isJumping && canJump)
+        if (Input.GetKey(Settings.playerJumpKey) && !isJumping && canJump && !DialogManager.jumpDelay)
         {
             yVelocity += jumpVelocity;
             isJumping = true;

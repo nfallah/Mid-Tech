@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Screen : MonoBehaviour
 {
@@ -22,6 +18,8 @@ public class Screen : MonoBehaviour
     private readonly float mouseRaycastDistance = 0.0011f, mouseRaycastOffset = 0.001f;
 
     private GameObject cursor, link, mouse;
+
+    private int currentScreenButtonIndex;
 
     private ScreenElement currentScreenElement;
 
@@ -64,7 +62,11 @@ public class Screen : MonoBehaviour
 
             currentScreenElement.Scroll(scrollDistance);
 
-            // To-do: add UIEvent execution if shouldDisplayLink is enabled.
+            // If the mouse hovers on a valid screen button, it will attempt to execute its corresponding event.
+            if (Input.GetMouseButtonDown(0) && shouldDisplayLink)
+            {
+                currentScreenElement.ScreenEvent.Execute(currentScreenButtonIndex);
+            }
         }
 
         else
@@ -88,6 +90,7 @@ public class Screen : MonoBehaviour
         link.transform.parent = mouse.transform;
         link.transform.localPosition = linkPos;
         mouse.transform.localEulerAngles = MouseSideRotation;
+        cursor.layer = link.layer = 9; // "Interactable (UI)" layer
 
         Ray ray = new Ray(mouse.transform.position - mouseRaycastOffset * Direction, Direction);
 
@@ -122,16 +125,22 @@ public class Screen : MonoBehaviour
 
     private bool ScreenButtonCheck()
     {
+        int traversalIndex = 0;
+
         foreach (ScreenButton screenButton in currentScreenElement.ScreenButtons)
         {
             Vector2 topLeft = screenButton.TopLeft, bottomRight = screenButton.BottomRight;
 
             if (mousePosition.x >= topLeft.x && mousePosition.x <= bottomRight.x && mousePosition.y >= topLeft.y && mousePosition.y <= bottomRight.y)
             {
+                currentScreenButtonIndex = traversalIndex;
                 return true;
             }
+
+            traversalIndex++;
         }
 
+        currentScreenButtonIndex = -1;
         return false;
     }
 
